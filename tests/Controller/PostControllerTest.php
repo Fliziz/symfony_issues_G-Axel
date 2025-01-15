@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class PostControllerTest extends WebTestCase
 {
+    private const NEW_VALUE = 'Something New';
+
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $postRepository;
@@ -88,16 +90,16 @@ final class PostControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
         $this->client->submitForm('Update', [
-            'post[name]' => 'Something New',
-            'post[details]' => 'Something New',
+            'post[name]' => self::NEW_VALUE,
+            'post[details]' => self::NEW_VALUE,
         ]);
 
-        self::assertResponseRedirects('/post/');
+        self::assertResponseRedirects($this->path);
 
         $fixture = $this->postRepository->findAll();
 
-        self::assertSame('Something New', $fixture[0]->getName());
-        self::assertSame('Something New', $fixture[0]->getDetails());
+        self::assertSame(self::NEW_VALUE, $fixture[0]->getName());
+        self::assertSame(self::NEW_VALUE, $fixture[0]->getDetails());
     }
 
     public function testRemove(): void
@@ -113,7 +115,7 @@ final class PostControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
         $this->client->submitForm('Delete');
 
-        self::assertResponseRedirects('/post/');
+        self::assertResponseRedirects($this->path);
         self::assertSame(0, $this->postRepository->count([]));
     }
 }
