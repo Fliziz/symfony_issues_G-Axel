@@ -31,7 +31,7 @@ final class ProductControllerTest extends WebTestCase
     public function testIndex(): void
     {
         $this->client->followRedirects();
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Product index');
